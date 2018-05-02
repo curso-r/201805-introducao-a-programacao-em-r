@@ -1,0 +1,148 @@
+---
+title: "R base: data frames"
+author: "William"
+date: "2 de maio de 2018"
+output: html_document
+---
+
+## Desafio
+
+Vamos criar uma função que recebe um data frame e o índice de uma coluna e devolve:
+
+a) se a coluna for numérica, um vetor com a média e o desvio padrão;
+b) se a coluna for texto, um vetor com uma tabela de frequências.
+
+O que precisamos saber:
+
+1. O que são data frames?
+2. Como acessar uma coluna de um data frame?
+3. Como fazer uma função devolver mais de um valor?
+4. Como fazer uma tabela de frequências?
+
+
+>> Data frames são listas.
+
+## Listas
+
+Listas são um tipo de vetor.
+
+- Vetores atômicos: homogêneos (apenas um tipo de valor).
+- Listas: heterogêneos (vários tipos de valores).
+
+```{r}
+knitr::include_graphics("http://r4ds.had.co.nz/diagrams/data-structures-overview.png")
+```
+
+Para criar listas, usamos a função `list()`.
+
+```{r, echo=FALSE, eval=FALSE}
+lista1 <- list(1:5, "Z", TRUE, c("c", "1", "3", "7"))
+lista1
+
+length(lista1)
+
+# Podemos colocar uma lista dentro de outra lista.
+
+lista2 <- list(list(1, "a", TRUE), "NA", c(1, 2))
+lista2
+
+length(lista1)
+```
+
+Podemos pensar na lista como uma rua, sendo que cada posição é uma casa.
+
+Como acessar os valores dentro de cada "casa"?
+
+```{r}
+#Acessando a casa
+lista1[1]
+
+class(lista1[1])
+
+# Acessando quem mora na casa
+lista1[[1]]
+
+class(lista1[[1]])
+
+# Acessando uma posição de um vetor dentro da lista
+lista1[[1]][2]
+
+```
+
+Também podemos fazer listas nomeadas.
+
+```{r, echo=FALSE, eval=FALSE}
+
+lista <- list(name = "William",
+              id = 137,
+              opt = c("red", "blue"),
+              valid = TRUE)
+
+lista["name"] # Retorna a casa chamada 'name'
+lista$name    # Retorna o valor dentro da casa 'name'
+```
+
+## Exercício
+
+a) Construa uma lista com dois vetores de tamanhos e classes diferentes.
+
+b) Acesse o último elemento do segundo vetor da lista que você acabou de fazer.
+
+```{r, echo=FALSE, eval=FALSE}
+
+
+```
+
+## Data frames
+
+Data frames são listas com duas características especiais:
+
+- Todos os elementos tem o mesmo comprimento.
+- O atributo dimensão.
+
+```{r}
+df <- data.frame(a = 1:5,
+                 b = letters[1:5],
+                 c = c(T, F, F, F, T))
+df
+
+dim(df)
+```
+
+Algumas funções úteis:
+
+- `head()`: mostra as primeiras 6 linhas.
+- `tail()`: mostra as últimas 6 linhas.
+- `dim()`: número de linhas e de colunas.
+- `names()`: os nomes das colunas (variáveis).
+- `str()`: estrutura do data.frame. Mostra, entre outras coisas, as classes de cada coluna.
+
+```{r}
+mtcars
+
+head(mtcars)
+tail(mtcars)
+dim(mtcars)
+names(mtcars)
+str(mtcars)
+
+# Como data frames têm dimensão, o subsetting é um pouco diferente.
+
+mtcars[1,1]
+mtcars[c(1,3),c(2,4)]
+mtcars[1,]
+mtcars[,1]
+mtcars[,"mpg"]
+```
+
+## Desafio (parte 2)
+
+```{r}
+resumir <- function(df, i) {
+  
+  
+  
+  
+}
+```
+

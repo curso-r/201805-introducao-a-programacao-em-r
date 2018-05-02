@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Curso de introdução à programação em R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Curso-R" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Curso de introdução à programação em R
+## Introdução
+### Curso-R
+### 2 de maio de 2018
+
+---
+
+
+
+
+# Curso-R
+
+- Nosso primeiro curso foi em 2015, no IME-USP.
+
+- A empresa surgiu em 2017.
+
+- Filosofia: código aberto.
+
+- Começamos a receber projetos de consultoria.
+
+- Criamos a R6.
+
+---
+
+# Membros
+
+&lt;img src="img/Curso-R-2.png" width="80%" style="display:block; margin-left: auto; margin-right:auto"&gt;
+
+---
+
+# Datathon
+
+&lt;img src="img/datathon.jpeg" width="70%" height="500" style="display:block; margin-left: auto; margin-right:auto"&gt;
+
+---
+
+# O curso
+
+Nosso curso se baseia no livro [R for data science](http://r4ds.had.co.nz).
+
+Seguimos bastante a ideia por trás do ciclo da ciência de dados:
+
+&lt;br&gt;
+
+&lt;img = src="https://raw.githubusercontent.com/hadley/r4ds/master/diagrams/data-science.png" style="display:block; margin-left: auto; margin-right:auto"&gt;
+
+---
+
+# Ferramentas para ciência de dados
+
+&lt;img src="img/bigdata.png"&gt;
+
+&lt;center&gt;R é a grande cola!&lt;/center&gt; 
+
+---
+
+# Tidyverse: o universo arrumadinho
+
+**Revolução do R**: quem programava em R antes de 2012 nota uma diferença gigante.
+
+&lt;img src="img/abc.jpg" style="display:block; margin-left: auto; margin-right:auto"&gt;
+---
+
+# Princípios do tidyverse
+
+\&gt; **Eficiência algorítmica vs eficiência de trabalho**
+
+O tempo gasto pensando em como realizar uma operação é mais importante do que o tempo que o computador gasta para realizar um cálculo.
+
+\&gt; **Tidy data**
+
+Princípio para arrumação de base de dados que resolve 90% dos problemas reais. Base tidy:
+
+- Cada observação é uma linha do bd.
+
+- Cada variável é uma coluna do bd.
+
+- Cada dado está numa célula do bd.
+
+\&gt; **Utilização do operador pipe**: `%&gt;%`.
+
+---
+
+# Material do curso
+
+Temos um material em português disponível nesta página:
+
+http://material.curso-r.com/
+
+Também temos um blog:
+
+http://curso-r.com/blog/
+
+---
+
+# GitHub
+
+- Maior plataforma online para compartilhar códigos.
+
+- Utiliza o **Git**, a melhor ferramenta de versionamento de software.
+
+**Vantagens**:
+
+-  Boa prática de organizar projetos, pois mantém os códigos organizados e atualizados na web.
+
+-  Projetos colaborativos: aumenta a produtividade e permite que pessoas de todo lugar ajudem nos projetos. O `tidyverse` só é o que é hoje por conta do *social coding*.
+
+---
+
+# GitHub
+
+Um tutorial para começar a [usar Github no RStudio rapidamente](http://curso-r.com/blog/2017/07/17/2017-07-17-rstudio-e-github/). 
+
+Para detalhes, faça o [data science toolbox](https://www.coursera.org/learn/data-scientists-tools).
+
+---
+
+# Cronograma
+
+* 17/03 - Introdução: `base`
+
+* 17/03 - Importação: `readr`, `readxl`
+
+* 17/03 - Manipulação: `dplyr`, `tidyr`
+
+* 24/03 - Visualização: `ggplot2`
+
+* 24/03 - Case
+
+---
+
+# Dinâmica das aulas
+
+- Intervalo às 21h.
+
+- Aulas expositivas em blocos de 4h.
+
+- Exercícios ao decorrer e no final das aulas.
+
+- Leituras e exercícios complementares fora da sala de aula.
+
+---
+
+# Exercício da aula zero
+
+Guardar:
+
+- Github
+
+- http://material.curso-r.com/
+
+- Tidyverse
+
+- pipe (%&gt;%)
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

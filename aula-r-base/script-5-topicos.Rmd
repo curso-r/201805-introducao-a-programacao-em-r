@@ -1,0 +1,98 @@
+---
+title: "R base: tópicos adicionais"
+author: "William"
+date: "2 de maio de 2018"
+output: html_document
+---
+
+## Matrizes
+
+Matrizes são vetores atômicos com duas dimensões.
+
+```{r, echo=FALSE, eval=FALSE}
+m <- matrix(1:9, nrow = 3, ncol = 3)
+m
+
+dim(m)    # A funçăo dim() retorna a dimensăo do objeto.
+```
+
+```{r, echo=FALSE, eval=FALSE}
+m[1, 2]   # Seleciona o primeiro elemento da segunda coluna.
+m[2,  ]   # Seleciona a segunda linha.
+m[ , 3]   # Seleciona a terceira coluna.
+t(m)      # Devolve a matriz transposta.
+```
+
+--------------------------------------------------------------------------------
+
+## Controles de Fluxo (parte 2)
+
+## for
+
+```{r}
+for(i in 1:5){
+  
+  resultado <- i^3
+  print(resultado)
+}
+
+i
+contador
+```
+
+## while
+
+```{r}
+set.seed(2)
+jogadas <- 0
+coroa <- FALSE               # Número de jogadas até uma coroa (ou cara).
+
+while(!coroa) {
+  coroa <- runif(1) > 0.5
+  jogadas <- jogadas + 1
+}
+
+jogadas
+```
+
+## ifelse
+
+```{r}
+x <- letters
+ifelse(x %in% c("a", "e", "i", "o", "u"), "vogal", "consoante")
+```
+
+
+## Exercícios extras
+
+1) Selecione apenas os valores pares do vetor  `x <- 1:10`.
+
+2) Calcule o número de ouro no R.
+
+Dica: o número de ouro é dado pela seguinte expressão
+
+$$
+\frac{1 + \sqrt{5}}{2}
+$$
+
+3) Brincadeira do "Pi". Faça um vetor que contenha "Pi" no lugar dos números divisíveis por 3.
+
+```{r}
+
+```
+
+
+4) Sem rodar o código, calcule o que a expressão `5 + 3 * 10 %/% 3 == 15` vai resultar no R. Em seguida, apenas utilizando parênteses, faço a expressão retornar o valore contrário (i.e., se originariamente for TRUE, faça retornar FALSE).
+
+5) Por que o código abaixo retorna erro? Arrume o código para retornar o valor TRUE.
+
+```{r}
+x <- 4
+
+if(x = 4) {
+  TRUE
+}
+```
+
+6) Use o for para retornar o valor mínimo do seguinte vetor: `vetor <- c(4, 2, 1, 5, 3)`. Modifique o seu código para receber vetores de qualquer tamanho.
+

@@ -1,0 +1,10 @@
+---
+title: "Case"
+author: "Curso-r::Julio"
+date: "09/05/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
