@@ -3,8 +3,287 @@ title: "Manipulação"
 author: "Curso-r::Daniel"
 date: "02/05/2018"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Importação de dados
+
+```{r}
+library(readr)
+diamantes <- read_csv("dados/diamonds.csv")
+diamantes2 <- read_delim("dados/diamonds2.csv", delim = ";")
+```
+
+**Exercício** Importe o restante das bases. Dica: pacotes `haven` e `jsonlite`.
+Caso necessário instale o pacote.
+
+```{r}
+
+```
+
+
+# Manipulação de dados
+
+```{r}
+library(dplyr)
+```
+
+
+**Exercício** Importe a tabela `flights.csv`.
+
+```{r}
+
+```
+
+## filter
+
+```{r}
+filter(flights, month == 1, day == 1)
+jan1 <- filter(flights, month == 1, day == 1)
+filter(flights, month == 11 | month == 12)
+nov_dec <- filter(flights, month %in% c(11, 12))
+filter(flights, arr_delay <= 120, dep_delay <= 120)
+```
+
+Comparações com NA
+
+```{r}
+NA > 5
+10 == NA
+NA + 10
+NA / 2
+```
+
+```{r}
+df <- tibble(x = c(1, NA, 3))
+filter(df, x > 1)
+```
+
+**Exercícios** (15 minutos)
+
+Encontre todos os voos que:
+
+1) Saíram mais de 2 horas atrasados
+2) Voaram para Houston (AH or HOU)
+3) Foram operados por United, American, ou Delta
+4) Chegaram mais de 2 horas atrasados mais não sairam atrasados 
+5) Saíram mais de 1h atrasados mas chegaram menos de 30 minutos atrasados
+6) Saíram entre meia noite e 6 da manhã
+7) Possuem valor NA em na variável `dep_time`. - O que significa ter `dep_time` = NA?
+Quais outras variáveis possuem `NA`s.
+
+
+```{r}
+
+```
+
+## arrange
+
+```{r}
+arrange(flights, year, month, day)
+arrange(flights, desc(arr_delay))
+```
+
+Com NA
+
+```{r}
+df <- tibble(x = c(5, 2, NA))
+arrange(df, x)
+arrange(df, desc(x))
+```
+
+**Exercícios** 
+
+1) Como ordenar usando `arrange` de forma que NA fique no começo? (Dica `is.na`)
+
+```{r}
+
+```
+
+2) Ordene de acordo com os mais atrasados. Encontre o voo que saiu mais cedo.
+
+```{r}
+
+```
+
+
+3) Encontre os voos mais rápidos
+
+```{r}
+
+```
+
+## select
+
+```{r}
+select(flights, year, month, day)
+select(flights, year:day)
+select(flights, -(year:day))
+select(flights, time_hour, air_time, everything())
+select(flights, time_hour, air_time, everything())
+select(flights, contains("time"))
+```
+
+```{r}
+rename(flights, tail_num = tailnum)
+```
+
+**Exercícios**
+
+1) Selecione as colunas `dep_time`, `dep_delay`, `arr_time`, e `arr_delay` de 3 formas diferentes.
+
+```{r}
+
+```
+
+2) O que acontece quando você seleciona duas vezes a mesma variável?
+
+```{r}
+
+```
+
+
+3) O que acontece com o trecho de código a seguir?
+
+```{r}
+select(flights, contains("TIME"))
+```
+
+## mutate
+
+```{r}
+flights_sml <- select(flights, 
+  year:day, 
+  ends_with("delay"), 
+  distance, 
+  air_time
+)
+```
+
+
+```{r}
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60
+)
+```
+
+```{r}
+mutate(flights_sml,
+  gain = arr_delay - dep_delay,
+  hours = air_time / 60,
+  gain_per_hour = gain / hours
+)
+```
+
+
+**Exercícios**
+
+1) Compare `air_time` com  `arr_time` - `dep_time`. O que você espera ver? O que você vê? O que você tem que fazer para arrumar?
+
+```{r}
+
+```
+
+
+2) Compare dep_time, sched_dep_time, e dep_delay. Como você espera que esses três números se relacionem?
+
+```{r}
+
+```
+
+## %>%
+
+```{r}
+flights %>%
+  select(year:day, ends_with("delay"), distance, air_time) %>%
+  mutate(
+    gain = arr_delay - dep_delay,
+    hours = air_time / 60,
+    gain_per_hour = gain / hours
+  )
+```
+
+**Exercícios**
+
+1) Em uma tabela selecione apenas os voos do mês de janeiro que tiveram atraso superior a 3 horas, deixe apenas as colunas companhia aérea, destino e atrasos. Calcule também o atraso em horas. Ordene a tabela deixando os voos com maior atraso no início.
+
+Use o pipe!
+
+```{r}
+
+```
+
+
+## summarise & group_by
+
+```{r}
+summarise(flights, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+```{r}
+by_day <- group_by(flights, year, month, day)
+summarise(by_day, delay = mean(dep_delay, na.rm = TRUE))
+```
+
+```{r}
+delays <- flights %>% 
+  group_by(dest) %>% 
+  summarise(
+    count = n(),
+    dist = mean(distance, na.rm = TRUE),
+    delay = mean(arr_delay, na.rm = TRUE)
+  ) %>% 
+  filter(count > 20, dest != "HNL")
+```
+
+NA's
+
+```{r}
+flights %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+```
+
+```{r}
+not_cancelled <- flights %>% 
+  filter(!is.na(dep_delay), !is.na(arr_delay))
+
+not_cancelled %>% 
+  group_by(year, month, day) %>% 
+  summarise(mean = mean(dep_delay))
+
+not_cancelled %>% 
+  group_by(dest) %>% 
+  summarise(carriers = n_distinct(carrier)) %>% 
+  arrange(desc(carriers))
+```
+
+**Exercícios**
+
+1) Além do tempo médio de atraso, quais são outras características de um voo que podem ser analisadas? Considere o seguinte cenário:
+
+* Um voo está sempre 10 minutos atrasados
+* Um voo está 30 minutos adiantado 50% das vezes e 30 minutos atrasado no resto das vezes.
+* 99% das vezes o voo acontece no tempo correto, 1% das vezes atrasa mais de 2 horas
+* O que é mais importante: atraso na saída ou na chegada?
+
+```{r}
+
+```
+
+2) Calcule o número de vôos por avião e a distância percorrida por cada um.  Um avião é representado pelo `tailnum`.
+
+3) A definição de "não cancelado" não está totalmente correta? Por que? Qual é a coluna mais importante?
+
+4) Olhe o número de voos por dia, existe algum padrão? A proporção de voos cancelados por dia tem alguma relação com o atraso médio?
+
+5) Qual companhia aérea tem os piores atrasos? Desafio: Sera que você consegue retirar o efeito dos aeroportos?
+
+
+
