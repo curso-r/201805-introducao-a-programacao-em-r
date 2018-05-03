@@ -31,7 +31,10 @@ A maioria das funções precisam receber argumentos.
 ?rnorm
 ?hist
 
-rnorm(n = 100)
+hist(x = rnorm(100))
+
+rnorm(100, 2, 10)
+rnorm(n = 100, mean = 2, sd = 10)
 hist(x = rnorm(100))
 
 amostra <- rnorm(100)
@@ -43,8 +46,11 @@ Operadores também são funções.
 ```{r}
 `<-`(a, 2)
 a
+a <- 2
+
 
 `+`(1, 1)
+1 + 1
 ```
 
 Podemos criar as nossas próprias funções.
@@ -69,7 +75,7 @@ multiplica_ab <- function(a, b = 2) {
   return(res)
 }
 
-multiplica_ab(2)
+multiplica_ab(2, 4)
 ```
 
 Exemplo bizarro:
@@ -78,6 +84,7 @@ Exemplo bizarro:
 `+` <- function(a, b) {
   a - b
 }
+
 
 `+`(a = 1, b = 1)
 
@@ -92,7 +99,15 @@ As regras de nomes de objetos também valem para as funções. Evite usar nomes 
 ## Desafio (parte 1)
 
 ```{r}
-
+coef_var <- function(x) {
+  
+  # calcular o coeficiente de variação
+  
+  res <-  ...
+  
+  return(res)
+  
+}
 ```
 
 ## Vetores
@@ -101,7 +116,7 @@ Utilizamos a função `c()` para criar vetores.
 
 ```{r, echo=FALSE, eval=FALSE}
 
-c(1, 2, 3)
+c(1, -2, 3)
 -c(10, 20, 30)
 ```
 
@@ -112,7 +127,7 @@ Também podemos usar `:` para criar sequências.
 -10:3
 ```
 
->> FUNÇÂO IMPORTANTE: 
+>> FUNÇÃO IMPORTANTE: 
 
 `lenght()`: devolve o comprimento de um vetor.
 
@@ -127,19 +142,21 @@ length(0:10)
 1. O que acontece se somarmos um número com um vetor? E se multiplicarmos?
 
 ```{r}
-
+c(1, 2, 3, 4, 5) + 1
 ```
 
 2. O que acontece se somarmos/multiplicarmos dois vetores de mesmo comprimento?
 
 ```{r}
-
+c(1, 2, 3)*c(2, 3, 5)
 ```
 
-3. O que acontece se sormarmos/multiplicarmos dois vetores de comprimentos diferentes?
+3. O que acontece se somarmos/multiplicarmos dois vetores de comprimentos diferentes?
 
 ```{r}
+c(1, 2, 3, 4) + c(1, 2, 1, 2)
 
+c(1, 2, 3, 4) + c(1, 2, 3)
 ```
 
 
@@ -231,6 +248,10 @@ if(x == 1) {
 if else: faz uma ação se a primeira condição for atendida, uma segunda ação se a segunda condição for atendida, e assim por diante.
 
 ```{r}
+
+x <-  -3
+
+
 if(x < 0) {
   
   "negativo"
@@ -244,6 +265,17 @@ if(x < 0) {
   "positivo"
 }
 
+x <- 1
+
+if(x < 0) {
+  
+  "negativo"
+  
+} else {
+  
+  "neutro"
+  
+}
 ```
 
 ## Desafio (parte 3)
@@ -252,6 +284,9 @@ if(x < 0) {
 coef_var <- function(x) {
   
   # Testa se o comprimento do vetor é maior que 1.
+  if(length(x) < 2) {
+    stop("x deve ser um vetor de comprimento maior que 1.")
+  }
   
   res <- sd(x)/mean(x)
   
@@ -270,7 +305,19 @@ Outra pergunta:
 7. Como lidar com NAs na entrada?
 
 ```{r}
+coef_var <- function(x) {
+  
+  # Testa se o comprimento do vetor é maior que 1.
+  if(length(x) < 2) {
+    stop("x deve ser um vetor de comprimento maior que 1.")
+  }
+  
+  res <- sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE)
+  
+  return(res)
+}
 
+coef_var(c(1, 1, 2, 3, 5, 8, 13, NA, 34))
 ```
 
 ## Exercícios: subsetting
@@ -302,6 +349,10 @@ vetor[c(TRUE, FALSE, FALSE, TRUE, TRUE)]
 
 #g)
 vetor[TRUE]
+
+vetor < 3
+
+vetor[!is.na(vetor)]
 ```
 
 ## Desafio (parte 4)
@@ -322,6 +373,9 @@ Mais perguntas:
 
 ```{r}
 x <- "a"
+x
+
+x <- "1"
 x
 
 y <- "masculino"
@@ -351,7 +405,7 @@ class(z)
 O que acontece quando fazemos a somamos um número com `TRUE`:
 
 ```{r}
-
+2 + FALSE
 ```
 
 ## Coerção
@@ -379,7 +433,7 @@ y <- c(1.7, "a")
 class(y)
 y
 
-y <- c(TRUE, 2L)
+y <- c(TRUE, 2L, FALSE)
 class(y)
 y
 
@@ -401,12 +455,21 @@ Esse comportamento se chama *coerção*. Ele segue a seguinte ordem:
 Vamos verificar se o vetor x é numérico.
 
 ```{r}
-c(1, 1, 2, 3, "5", 8, 13, NA, 34)
+v <- c(1, 1, 2, 3, "5", 8, 13, NA, 34)
+as.numeric(v)
+
+v2 <- c(1, 1, 2, 3, "a", 8, 13, NA, 34)
+as.numeric(v2)
+
 
 coef_var <- function(x) {
   
   if(length(x) < 2) {
-    error("x deve ser um vetor com comprimento maior que 1.")
+    stop("x deve ser um vetor com comprimento maior que 1.")
+  }
+  
+  if(!is.numeric(x)) {
+    stop("x não é numérico.")
   }
   
   res <- sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE)
@@ -424,6 +487,20 @@ Faça uma função que recebe um vetor de números e calcula a média apenas dos
 *Dica*: o operador `a %% b` retorna o resto da divisão de `a` por `b`.
 
 ```{r}
+v <- 1:10
+v
+
+v %% 2 == 0
+v[v %% 2 == 0]
+
+media_pares <- function(x) {
+  
+  pares <- x[x %% 2 == 0]
+  
+  mean(pares)
+}
+
+media_pares(v)
 
 ```
 

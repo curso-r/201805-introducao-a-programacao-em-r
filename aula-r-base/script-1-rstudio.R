@@ -38,8 +38,6 @@ obj2
 
 obj3
 
-
-
 # Você pode usar quase qualquer nome como objeto. Algumas exceções
 
 ## Não pode começar com números ou símbolos.

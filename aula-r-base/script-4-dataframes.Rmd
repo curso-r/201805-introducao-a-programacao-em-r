@@ -10,7 +10,7 @@ output: html_document
 Vamos criar uma função que recebe um data frame e o índice de uma coluna e devolve:
 
 a) se a coluna for numérica, um vetor com a média e o desvio padrão;
-b) se a coluna for texto, um vetor com uma tabela de frequências.
+b) se a coluna for texto, uma tabela de frequências.
 
 O que precisamos saber:
 
@@ -89,8 +89,12 @@ a) Construa uma lista com dois vetores de tamanhos e classes diferentes.
 b) Acesse o último elemento do segundo vetor da lista que você acabou de fazer.
 
 ```{r, echo=FALSE, eval=FALSE}
+lista <- list(1:5, letters[1:5])
+lista
 
+n <- length(lista[[2]])
 
+lista[[2]][n]
 ```
 
 ## Data frames
@@ -128,7 +132,7 @@ str(mtcars)
 
 # Como data frames têm dimensão, o subsetting é um pouco diferente.
 
-mtcars[1,1]
+mtcars[1,2]
 mtcars[c(1,3),c(2,4)]
 mtcars[1,]
 mtcars[,1]
@@ -138,11 +142,35 @@ mtcars[,"mpg"]
 ## Desafio (parte 2)
 
 ```{r}
+df <- ggplot2::mpg
+
 resumir <- function(df, i) {
   
+  df <- as.data.frame(df)
   
-  
-  
+  if(is.numeric(df[,i])) {
+    
+    media <- mean(df[,i], na.rm = TRUE) 
+    dp <- sd(df[,i], na.rm = TRUE)
+    
+    res <- c(media, dp)
+    
+    return(res)
+    
+  } else if(is.character(df[,i])) {
+    
+    tabela <- table(df[,i])
+    
+    return(tabela)
+    
+  } else {
+    
+    stop("A coluna selecionada não é numérica nem texto.")
+    
+  }
 }
+
+resumir(df, 2)
+
 ```
 

@@ -30,7 +30,7 @@ t(m)      # Devolve a matriz transposta.
 ## for
 
 ```{r}
-for(i in 1:5){
+for(i in c(2, 4, 12, 0)) {
   
   resultado <- i^3
   print(resultado)
@@ -44,11 +44,12 @@ contador
 
 ```{r}
 set.seed(2)
+
 jogadas <- 0
 coroa <- FALSE               # Número de jogadas até uma coroa (ou cara).
 
 while(!coroa) {
-  coroa <- runif(1) > 0.5
+  coroa <- runif(1) > 0.9
   jogadas <- jogadas + 1
 }
 

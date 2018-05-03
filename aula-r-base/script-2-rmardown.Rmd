@@ -14,7 +14,7 @@ Com o R Markdown, podemos transformar as nossas análises em relatórios reprodu
 
 ### Chunks
 
-*Atalho*: Ctrl+Alt+i
+**Atalho**: Ctrl+Alt+i
 
 ```{r}
 # O chunk é um mini script dentro do relatório.
