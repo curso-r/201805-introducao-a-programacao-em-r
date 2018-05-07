@@ -4,7 +4,7 @@ author: "Curso-r::Daniel"
 date: "02/05/2018"
 output: html_document
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -15,15 +15,27 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(readr)
-diamantes <- read_csv("dados/diamonds.csv")
+diamantes <- read_csv(file = "dados/diamonds.csv")
 diamantes2 <- read_delim("dados/diamonds2.csv", delim = ";")
+diamonds2 <- read_delim("aula-manip/dados/diamonds2.txt", 
+    "|", escape_double = FALSE, trim_ws = TRUE)
+
+library(readxl)
+diamantes_excel <- read_excel("dados/diamonds.xlsx")
+
+library(jsonlite)
+x <- read_json("dados/diamonds.json")
+
 ```
 
 **Exercício** Importe o restante das bases. Dica: pacotes `haven` e `jsonlite`.
 Caso necessário instale o pacote.
 
 ```{r}
-
+library(haven)
+read_sas("dados/diamonds.sas7bdat")
+bd_spss <- read_spss("dados/diamonds.sav")
+read_sav()
 ```
 
 
@@ -37,12 +49,13 @@ library(dplyr)
 **Exercício** Importe a tabela `flights.csv`.
 
 ```{r}
-
+flights <- read_csv("dados/flights.csv")
 ```
 
 ## filter
 
 ```{r}
+library(dplyr)
 filter(flights, month == 1, day == 1)
 jan1 <- filter(flights, month == 1, day == 1)
 filter(flights, month == 11 | month == 12)
@@ -57,11 +70,13 @@ NA > 5
 10 == NA
 NA + 10
 NA / 2
+NA^0
+"."
 ```
 
 ```{r}
 df <- tibble(x = c(1, NA, 3))
-filter(df, x > 1)
+filter(df, !is.na(x))
 ```
 
 **Exercícios** (15 minutos)
@@ -71,22 +86,27 @@ Encontre todos os voos que:
 1) Saíram mais de 2 horas atrasados
 2) Voaram para Houston (AH or HOU)
 3) Foram operados por United, American, ou Delta
-4) Chegaram mais de 2 horas atrasados mais não sairam atrasados 
+4) Chegaram mais de 2 horas atrasados mas não sairam atrasados 
 5) Saíram mais de 1h atrasados mas chegaram menos de 30 minutos atrasados
 6) Saíram entre meia noite e 6 da manhã
-7) Possuem valor NA em na variável `dep_time`. - O que significa ter `dep_time` = NA?
+7) Possuem valor NA  na variável `dep_time`. - O que significa ter `dep_time` = NA?
 Quais outras variáveis possuem `NA`s.
 
 
 ```{r}
-
+mto_atrasados <- filter(flights, dep_delay > 120)
+houston <- filter(flights, dest %in% c("AH", "HOU"))
+maiores_com <- filter(flights, carrier %in% c("UA", "AA", "DL"))
+atrasados1 <- filter(flights, arr_delay > 120,  dep_delay <= 0)
+atrasados2 <- filter(flights, dep_delay > 60, arr_delay < 30)
+cancelados <- filter(flights, is.na(dep_time))
 ```
 
 ## arrange
 
 ```{r}
-arrange(flights, year, month, day)
-arrange(flights, desc(arr_delay))
+arrange(flights, year, month, day, dep_time) 
+arrange(flights, desc(dep_delay), month)
 ```
 
 Com NA
@@ -102,20 +122,22 @@ arrange(df, desc(x))
 1) Como ordenar usando `arrange` de forma que NA fique no começo? (Dica `is.na`)
 
 ```{r}
-
+arrange(df, desc(is.na(x + 1)))
 ```
 
 2) Ordene de acordo com os mais atrasados. Encontre o voo que saiu mais cedo.
 
 ```{r}
-
+arrange(flights, desc(dep_delay + arr_delay))
+flights_depois_3h <- filter(flights, dep_time > 300)
+arrange(flights_depois_3h, dep_time)
 ```
 
 
 3) Encontre os voos mais rápidos
 
 ```{r}
-
+arrange(flights, air_time)
 ```
 
 ## select
@@ -125,8 +147,8 @@ select(flights, year, month, day)
 select(flights, year:day)
 select(flights, -(year:day))
 select(flights, time_hour, air_time, everything())
-select(flights, time_hour, air_time, everything())
 select(flights, contains("time"))
+select(flights, -ends_with("time"))
 ```
 
 ```{r}
@@ -138,13 +160,15 @@ rename(flights, tail_num = tailnum)
 1) Selecione as colunas `dep_time`, `dep_delay`, `arr_time`, e `arr_delay` de 3 formas diferentes.
 
 ```{r}
-
+select(flights, starts_with("dep"), starts_with("arr"))
+select(flights, dep_time, dep_delay, arr_time, arr_delay)
+select(flights, contains("dep_"), contains("arr_"), -starts_with("sched"))
 ```
 
 2) O que acontece quando você seleciona duas vezes a mesma variável?
 
 ```{r}
-
+select(flights, -year, year)
 ```
 
 
@@ -163,6 +187,7 @@ flights_sml <- select(flights,
   distance, 
   air_time
 )
+View(flights_sml)
 ```
 
 
@@ -187,20 +212,35 @@ mutate(flights_sml,
 1) Compare `air_time` com  `arr_time` - `dep_time`. O que você espera ver? O que você vê? O que você tem que fazer para arrumar?
 
 ```{r}
-
+flights_sml <- select(flights, air_time, arr_time, dep_time, arr_delay, dep_delay)
+mutate(
+  flights_sml, 
+  arr_time_min = arr_time %% 100 + arr_time %/% 100 * 60,
+  dep_time_min = dep_time %% 100 + dep_time %/% 100 * 60,
+  flight_time = ifelse(
+    arr_time > dep_time, 
+    arr_time_min - dep_time_min,
+    24*60 - dep_time_min + arr_time 
+    )
+  )
 ```
-
 
 2) Compare dep_time, sched_dep_time, e dep_delay. Como você espera que esses três números se relacionem?
 
 ```{r}
-
+flights %>%
+  select(dep_time, sched_dep_time, dep_delay) %>%
+  mutate(
+    dep_time_min = dep_time %% 100 + dep_time %/% 100 * 60,
+    sched_dep_time_min = sched_dep_time %% 100 + sched_dep_time %/% 100 * 60,
+    sched_dep_time_min + dep_delay
+  )
 ```
 
 ## %>%
 
 ```{r}
-flights %>%
+x <- flights %>%
   select(year:day, ends_with("delay"), distance, air_time) %>%
   mutate(
     gain = arr_delay - dep_delay,
