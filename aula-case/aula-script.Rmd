@@ -107,7 +107,9 @@ pesqEle %>%
     "UF: {info_uf}<br/>",
     "Município: {info_muni}<br/>",
     "Empresa: {comp_nm}<br/>",
-    "Estatístico: {stat_nm}<br/>"
+    "Estatístico: {stat_nm}<br/>",
+    "Entrevistados: {pesq_n}<br/>",
+    "Valor: {scales::dollar(pesq_val)}<br/>"
   )) %>% 
   leaflet() %>% 
   addTiles() %>% 
