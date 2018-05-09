@@ -6,9 +6,13 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(flexdashboard)
+
+# para graficos com interação
+library(plotly)
+# para mapa
+library(leaflet)
 
 pesqEle <- read_csv("pesqEle.csv")
 ```
