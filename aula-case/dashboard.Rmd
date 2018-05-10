@@ -1,0 +1,182 @@
+---
+title: "Untitled"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(flexdashboard)
+library(plotly)
+library(leaflet)
+
+pesqEle <- read_csv("pesqEle.csv")
+
+```
+
+Main
+========================
+
+Row
+-----------------------------------------------
+
+### Quantidade total de pesquisas {.value-box}
+
+```{r}
+valueBox(nrow(pesqEle), 
+         "Quantidade de pesquisas", 
+         icon = "fa-database",
+         color = "primary")
+```
+
+### Valor médio {.value-box}
+
+```{r}
+valor <- scales::dollar(mean(pesqEle$pesq_val, na.rm = TRUE))
+valueBox(valor, 
+         "Valor médio", 
+         icon = "fa-database",
+         color = "success")
+```
+
+### Quantidade de empresas {.value-box}
+
+```{r}
+valueBox(n_distinct(pesqEle$comp_cnpj), 
+         "Quantidade de empresas", 
+         icon = "fa-database",
+         color = "warning")
+```
+
+### Quantidade de estatísticos {.value-box}
+
+```{r}
+valueBox(n_distinct(pesqEle$stat_id), 
+         "Quantidade de estatísticos", 
+         icon = "fa-database",
+         color = "danger")
+```
+
+Row
+----------------------------------------------------
+
+### No tempo
+
+```{r}
+p <- pesqEle %>%
+  filter(lubridate::year(dt_reg) == 2016) %>% 
+  ggplot(aes(x = dt_reg)) +
+  geom_freqpoly(binwidth = 1)
+
+p <- p +
+  theme_minimal()
+
+plotly::ggplotly(p)
+```
+
+### Grafico de barras (contagem de UFs)
+
+```{r}
+
+p <- pesqEle %>%
+  filter(lubridate::year(dt_reg) == 2016) %>% 
+  mutate(info_uf = fct_infreq(info_uf)) %>%
+  ggplot(aes(x = info_uf)) +
+  geom_bar()
+
+plotly::ggplotly(p)
+```
+
+
+Row
+---------------------------------------
+
+### Mapa
+
+
+```{r}
+
+pesqEle %>% 
+  mutate(label = str_glue(
+    "<b>Município</b>: {info_muni}<br/>",
+    "Empresa: {comp_nm}<br/>",
+    "Amostra: {pesq_n}<br/>",
+    "Valor: {pesq_val}<br/>"
+  )) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addMarkers(label = ~lapply(label, shiny::HTML),
+             clusterOptions = markerClusterOptions())
+```
+
+
+
+
+Pesquisas estranhas
+======================================
+
+Row
+-------------------------------------
+
+
+### Valor por amostra (por empresa)
+
+```{r}
+tab <- pesqEle %>% 
+  filter(!is.na(pesq_val), !is.na(pesq_n), pesq_val > 0) %>% 
+  group_by(comp_nm, comp_cnpj) %>% 
+  summarise(razao = sum(pesq_val) / sum(pesq_n)) %>% 
+  arrange(razao)
+
+# install.packages("DT")
+tab
+```
+
+### Valor por amostra (por pesquisa)
+
+```{r}
+tab <- pesqEle %>% 
+  filter(!is.na(pesq_val), !is.na(pesq_n), pesq_val > 0) %>% 
+  mutate(razao = pesq_val / pesq_n) %>% 
+  arrange(razao) %>% 
+  select(comp_nm, pesq_val, pesq_n, razao)
+
+# install.packages("DT")
+DT::datatable(tab)
+```
+
+
+Estatísticos
+======================================
+
+
+Row
+--------------------------------------
+
+### Estatísticos com maior qtd de empresas
+
+```{r}
+
+tab <- pesqEle %>% 
+  group_by(stat_nm) %>% 
+  summarise(n = n(), qtd_empresas = n_distinct(comp_cnpj)) %>% 
+  arrange(desc(qtd_empresas))
+
+DT::datatable(tab)
+```
+
+### Estatísticos mais baratos
+
+```{r}
+tab <- pesqEle %>% 
+  filter(!is.na(pesq_val), !is.na(pesq_n), pesq_val > 0) %>% 
+  group_by(stat_nm) %>% 
+  summarise(razao = sum(pesq_val) / sum(pesq_n)) %>% 
+  arrange(razao)
+  
+DT::datatable(tab)
+```
+
+
+
