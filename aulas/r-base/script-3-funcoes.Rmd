@@ -1,0 +1,506 @@
+---
+title: "R base: Funções"
+author: "William"
+date: "2 de maio de 2018"
+output: html_document
+---
+
+## Desafio
+
+Vamos criar uma função que recebe um vetor de números reais e retorna o coeficiente de variação.
+
+O que precisamos saber:
+
+1. O que é uma função?
+2. Como construir uma função?
+3. O que são e como criar vetores no R?
+4. O que é o coeficiente de variação?
+
+## Funções
+
+Quase tudo no R é uma função.
+
+```{r}
+rnorm() # Sorteia uma amostra com distribuição normal
+hist() # Plota um histograma
+```
+
+A maioria das funções precisam receber argumentos.
+
+```{r}
+?rnorm
+?hist
+
+hist(x = rnorm(100))
+
+rnorm(100, 2, 10)
+rnorm(n = 100, mean = 2, sd = 10)
+hist(x = rnorm(100))
+
+amostra <- rnorm(100)
+hist(amostra)
+```
+
+Operadores também são funções.
+
+```{r}
+`<-`(a, 2)
+a
+a <- 2
+
+
+`+`(1, 1)
+1 + 1
+```
+
+Podemos criar as nossas próprias funções.
+
+```{r}
+inverte_sinal <- function(x) {
+  
+  res <- - x
+  
+  return(res)
+  
+}
+
+inverte_sinal(1)
+inverte_sinal(-2)
+inverte_sinal(0)
+
+multiplica_ab <- function(a, b = 2) {
+  
+  res <- a * b
+  
+  return(res)
+}
+
+multiplica_ab(2, 4)
+```
+
+Exemplo bizarro:
+
+```{r}
+`+` <- function(a, b) {
+  a - b
+}
+
+
+`+`(a = 1, b = 1)
+
+`+`(1, 1)
+
+1 + 1
+
+```
+
+As regras de nomes de objetos também valem para as funções. Evite usar nomes de funções já existentes, como `mean()`, `sum()`, `sample()` etc.
+
+## Desafio (parte 1)
+
+```{r}
+coef_var <- function(x) {
+  
+  # calcular o coeficiente de variação
+  
+  res <-  ...
+  
+  return(res)
+  
+}
+```
+
+## Vetores
+
+Utilizamos a função `c()` para criar vetores.
+
+```{r, echo=FALSE, eval=FALSE}
+
+c(1, -2, 3)
+-c(10, 20, 30)
+```
+
+Também podemos usar `:` para criar sequências.
+
+```{r}
+1:5
+-10:3
+```
+
+>> FUNÇÃO IMPORTANTE: 
+
+`lenght()`: devolve o comprimento de um vetor.
+
+```{r}
+length(c(1, 2, 3))
+
+length(0:10)
+```
+
+## Exercícios: operações com vetores
+
+1. O que acontece se somarmos um número com um vetor? E se multiplicarmos?
+
+```{r}
+c(1, 2, 3, 4, 5) + 1
+```
+
+2. O que acontece se somarmos/multiplicarmos dois vetores de mesmo comprimento?
+
+```{r}
+c(1, 2, 3)*c(2, 3, 5)
+```
+
+3. O que acontece se somarmos/multiplicarmos dois vetores de comprimentos diferentes?
+
+```{r}
+c(1, 2, 3, 4) + c(1, 2, 1, 2)
+
+c(1, 2, 3, 4) + c(1, 2, 3)
+```
+
+
+## Desafio (parte 2)
+
+O coeficiente de variação é a razão entre o desvio padrão e a média de um conjunto de números.
+
+```{r}
+coef_var <- function(x) {
+  
+  res <- sd(x)/mean(x)
+  
+  return(res)
+}
+
+coef_var(1:10)
+coef_var(1)
+```
+
+Levantamos novas perguntas:
+
+5. O que são NAs?
+6. Como posso conferir se o comprimento do vetor é maior que 1?
+
+## Valores especiais
+
+Existem valores reservados para representar dados faltantes, infinitos, e indefiniçőes matemáticas.
+
+- **NA** (Not Available) significa ausência de valor (em um vetor).
+
+- **NaN** (Not a Number) representa indefinições matemáticas, como `0/0` e `log(-1)`. Um `NaN` é um `NA`, mas a recíproca não é verdadeira.
+
+- **Inf**. Infinito.
+
+- **NULL** significa ausência de um objeto (vetor).
+
+- Use as funções `is.na()`, `is.nan()`, `is.infinite()` e `is.null()` para testar se um objeto é um desses valores.
+
+```{r}
+# NA
+sd(1)
+
+# NaN
+0/0
+log(-1)
+
+# Infinito
+Inf
+-Inf
+
+# NULL
+NULL
+```
+
+
+## Controle de fluxo
+
+É muito comum precisarmos testar condições para selecionar valores de um objeto ou criar controles de fluxo. Para isso, utilizamos os *operadores lógicos*.
+
+```{r}
+1 == 1    # é igual?
+1 != 1    # é diferente?
+1 < 2     # é menor?
+1 <= 2    # é menor ou igual?
+2 > 2     # é maior?
+2 >= 2    # é maior ou igual?
+
+!(1 < 2)   # negativa
+```
+
+if: faz uma ação se a condição for atendida
+
+```{r}
+x <- 0
+
+if(x == 1) {         
+  Sys.time()      # Devolve a data/hora no momento da execução.
+}
+```
+
+```{r}
+x <- 1
+
+if(x == 1) {         
+  Sys.time()    
+}
+```
+
+if else: faz uma ação se a primeira condição for atendida, uma segunda ação se a segunda condição for atendida, e assim por diante.
+
+```{r}
+
+x <-  -3
+
+
+if(x < 0) {
+  
+  "negativo"
+  
+} else if(x == 0) {
+  
+  "neutro"
+  
+} else if(x > 0) {
+  
+  "positivo"
+}
+
+x <- 1
+
+if(x < 0) {
+  
+  "negativo"
+  
+} else {
+  
+  "neutro"
+  
+}
+```
+
+## Desafio (parte 3)
+
+```{r}
+coef_var <- function(x) {
+  
+  # Testa se o comprimento do vetor é maior que 1.
+  if(length(x) < 2) {
+    stop("x deve ser um vetor de comprimento maior que 1.")
+  }
+  
+  res <- sd(x)/mean(x)
+  
+  return(res)
+}
+
+coef_var(1:10)
+coef_var(1)
+
+coef_var(c(1, 1, 2, 3, 5, 8, 13, NA, 34))
+```
+
+
+Outra pergunta:
+
+7. Como lidar com NAs na entrada?
+
+```{r}
+coef_var <- function(x) {
+  
+  # Testa se o comprimento do vetor é maior que 1.
+  if(length(x) < 2) {
+    stop("x deve ser um vetor de comprimento maior que 1.")
+  }
+  
+  res <- sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE)
+  
+  return(res)
+}
+
+coef_var(c(1, 1, 2, 3, 5, 8, 13, NA, 34))
+```
+
+## Exercícios: subsetting
+
+Para selecionar posições específicas de um vetor, usamos o `[]`.
+
+1. O que acontece quando rodamos cada um dos códigos abaixo:
+
+```{r}
+vetor <- c(1, 4, 2, 7, 9)
+
+#a)
+vetor[1]
+
+#b)
+vetor[3]
+
+#c)
+vetor[6]
+
+#d)
+vetor[-3]
+
+#e)
+vetor[c(1,2)]
+
+#f)
+vetor[c(TRUE, FALSE, FALSE, TRUE, TRUE)]
+
+#g)
+vetor[TRUE]
+
+vetor < 3
+
+vetor[!is.na(vetor)]
+```
+
+## Desafio (parte 4)
+
+A entrada também pode ter um character:
+
+```{r}
+coef_var(c(1, 1, 2, 3, "5", 8, 13, NA, 34))
+```
+
+Mais perguntas:
+
+8. O que são characters?
+9. O que acontece quando misturammos números e caracteres num vetor?
+10. Como testar se a entrada da função é numérica?
+
+## Characters
+
+```{r}
+x <- "a"
+x
+
+x <- "1"
+x
+
+y <- "masculino"
+y
+
+z <- "Isso é uma frase."
+z
+```
+
+>> Função importante!
+
+`class()`: devolve a classe de um objeto.
+
+```{r, echo=FALSE, eval=FALSE}
+x <- 1
+class(x)
+
+y <- TRUE
+class(y)
+
+z <- "a"
+class(z)
+```
+
+## Exercício relâmpago.
+
+O que acontece quando fazemos a somamos um número com `TRUE`:
+
+```{r}
+2 + FALSE
+```
+
+## Coerção
+
+Outros tipos de vetores:
+
+```{r, echo=FALSE, eval=FALSE}
+vetor_numerico <- c(1, 2, 3, 4)
+vetor_inteiros <- c(1L, 2L, 3L, 4L)
+vetor_logico <- c(T, F, F, T, T)
+vetor_palavras <- c("R", "1000", "USP")
+
+class(vetor_numerico)
+class(vetor_inteiros)
+class(vetor_logico)
+class(vetor_palavras)
+```
+
+>> Importante: vetores são homogêneos! Eles só aceitam valores de uma única classe.
+
+O que acontece se misturarmos objetos de diferentes classes?
+
+```{r}
+y <- c(1.7, "a")
+class(y)
+y
+
+y <- c(TRUE, 2L, FALSE)
+class(y)
+y
+
+y <- c(TRUE, "a")
+class(y)
+y
+
+y <- c(TRUE, FALSE, 10)
+class(y)
+y
+```
+
+Esse comportamento se chama *coerção*. Ele segue a seguinte ordem:
+
+**DOMINANTE** `character > complex > numeric > integer > logical` **RECESSIVO**
+
+## Desafio (parte 5)
+
+Vamos verificar se o vetor x é numérico.
+
+```{r}
+v <- c(1, 1, 2, 3, "5", 8, 13, NA, 34)
+as.numeric(v)
+
+v2 <- c(1, 1, 2, 3, "a", 8, 13, NA, 34)
+as.numeric(v2)
+
+
+coef_var <- function(x) {
+  
+  if(length(x) < 2) {
+    stop("x deve ser um vetor com comprimento maior que 1.")
+  }
+  
+  if(!is.numeric(x)) {
+    stop("x não é numérico.")
+  }
+  
+  res <- sd(x, na.rm = TRUE)/mean(x, na.rm = TRUE)
+  
+  return(res)
+}
+
+coef_var(c(1, 1, 2, 3, "5", 8, 13, NA, 34))
+```
+
+## Exercício
+
+Faça uma função que recebe um vetor de números e calcula a média apenas dos números pares. Verifique se o vetor de entrada é válido criando condições e erros apropriados.
+
+*Dica*: o operador `a %% b` retorna o resto da divisão de `a` por `b`.
+
+```{r}
+v <- 1:10
+v
+
+v %% 2 == 0
+v[v %% 2 == 0]
+
+media_pares <- function(x) {
+  
+  pares <- x[x %% 2 == 0]
+  
+  mean(pares)
+}
+
+media_pares(v)
+
+```
+
